@@ -1,50 +1,125 @@
-# Celigo Script Repo (Celigo + Node, CommonJS) v2
+Celigo Script Runner & Sync Framework
 
-You keep **Celigo paste-ready** scripts and get **Node-testable** scripts generated automatically.
+This repository provides a local development, testing, and synchronization framework for Celigo JavaScript scripts.
 
-- `celigo/<Type>/...` = source of truth (no `require`, no exports)
-- `node/<Type>/...` = generated for testing (CommonJS `module.exports`)
-- `Results/` = runner outputs
-- `scripts.manifest.json` = registry (generated from celigo scripts)
+It allows you to:
+- Author Celigo scripts in a clean, organized structure
+- Automatically sync them into Node-compatible test files
+- Run and debug scripts locally
+- Keep a single source of truth for Celigo deployments
+- Work entirely from VS Code + PowerShell
+- Scale into fixtures, snapshot testing, and CI validation
 
-## Install
+------------------------------------------------------------
 
-```bash
-npm install
-```
+REPOSITORY STRUCTURE
 
-## Run a script (uses manifest)
+DTICode/
+├── celigo/                 # SOURCE OF TRUTH (author scripts here)
+│   ├── Transform/
+│   ├── PreMap/
+│   ├── PostResponseMap/
+│   ├── Branching/
+│   └── utils/
+│       └── date.js
+│
+├── node/                   # AUTO-GENERATED (do not edit)
+├── data/
+│   └── sample.json
+├── tests/
+│   ├── fixtures/
+│   └── snapshots/
+├── tools/
+│   ├── sync.js
+│   └── sync-watch.js
+├── Results/
+├── scripts.manifest.json
+├── index.js
+├── package.json
+└── .vscode/
 
-```bash
+------------------------------------------------------------
+
+HOW TO ADD SCRIPTS
+
+1) Create a file in the appropriate celigo/<Type>/ folder
+
+Example:
+celigo/Transform/MyTransform - Transform.js
+
+2) Paste pure Celigo code
+
+function transform(options) {
+  const record = options.record;
+  record.Processed = true;
+  return record;
+}
+
+3) Sync the repo
+
+npm run sync:hard
+or
+npm run sync:watch
+
+------------------------------------------------------------
+
+HOW TO RUN TESTS
+
+Basic test:
+node index.js --name "MyTransform - Transform" --input data/sample.json
+
+Example:
 node index.js --name "ExampleTransform - Transform" --input data/sample.json
-```
 
-## Sync (generate node scripts + manifest)
+Results are written to the Results/ folder.
 
-```bash
-npm run sync
-```
+------------------------------------------------------------
 
-Manifest only:
+PER-SCRIPT TEST FIXTURES
 
-```bash
-npm run manifest
-```
+tests/fixtures/MyTransform - Transform/
+├── input.json
+└── expected.json
 
-## How local testing mimics Celigo
+Run with:
+node index.js --name "MyTransform - Transform" --input tests/fixtures/MyTransform - Transform/input.json
 
-The runner builds **Celigo-ish** `options` objects per type, e.g.:
+------------------------------------------------------------
 
-- Transform: `{ record, data, settings, testMode }`
-- PreMap: `{ data: [...], lastExportDateTime, settings, testMode }`
-- PostResponseMap: `{ responseData, errors, abort, newErrorsAndRetryData, settings, testMode }`
-- ContentBasedFlowRouter: `{ rawMessageBody, settings, testMode }`
-- HandleRequest: `{ request, method, headers, query, body, settings, testMode }`
+SNAPSHOT TESTING (OPTIONAL)
 
-You can tweak defaults in `runner.profile.json`.
+tests/snapshots/MyTransform - Transform.snapshot.json
 
-## Add a new script (checklist)
+Snapshots store full script output and are compared on future runs
+to detect regressions.
 
-1) Create `celigo/<Type>/<YourName> - <Type>.js` using `templates/celigo/<Type>.template.js`
-2) Run `npm run sync`
-3) Test with `node index.js --name "YourName - <Type>" --input data/sample.json`
+------------------------------------------------------------
+
+CI VALIDATION (OPTIONAL)
+
+Typical CI steps:
+1) npm install
+2) npm run sync:hard
+3) Validate manifest and exports
+4) Run fixture tests
+5) Fail build on mismatches
+
+------------------------------------------------------------
+
+POWERSHELL WORKFLOW
+
+npm install
+npm run sync:hard
+npm run sync:watch
+git status
+git commit -m "Update script"
+git push
+
+------------------------------------------------------------
+
+MENTAL MODEL
+
+Celigo folder = authoring
+Node folder   = testing
+Sync          = compiler
+index.js      = runtime
