@@ -1,82 +1,50 @@
-# Celigo Script Repo (Celigo + Node, CommonJS)
+# Celigo Script Repo (Celigo + Node, CommonJS) v2
 
-The framework for this repo was created by ChatGPT and I will mark comments on code that was created by AI
+You keep **Celigo paste-ready** scripts and get **Node-testable** scripts generated automatically.
 
-This repo is set up so you can keep **two versions** of each script:
+- `celigo/<Type>/...` = source of truth (no `require`, no exports)
+- `node/<Type>/...` = generated for testing (CommonJS `module.exports`)
+- `Results/` = runner outputs
+- `scripts.manifest.json` = registry (generated from celigo scripts)
 
-- `celigo/<Type>/...` = paste-ready code for Celigo (no `require`, no `module.exports`)
-- `node/<Type>/...` = Node testable code (CommonJS exports) run via `node index.js`
-
-Outputs are written to `Results/`.
-
-## Quick start
+## Install
 
 ```bash
 npm install
-node index.js --help
+```
+
+## Run a script (uses manifest)
+
+```bash
 node index.js --name "ExampleTransform - Transform" --input data/sample.json
 ```
 
-## Script types included
+## Sync (generate node scripts + manifest)
 
-- Branching*
-- ContentBasedFlowRouter*
-- Filter
-- FormInit
-- HandleRequest
-- PostAggregate
-- PostMap
-- PostResponseMap*
-- PostSubmit
-- PreMap*
-- PreSavePage*
-- Transform*
+```bash
+npm run sync
+```
 
-(Asterisk = you said you use it most often.)
+Manifest only:
 
-## How to add a new script (checklist)
+```bash
+npm run manifest
+```
 
-1) **Pick the type folder**
-   - Example: `Transform`, `PreMap`, `PostResponseMap`, etc.
+## How local testing mimics Celigo
 
-2) **Create the Celigo version**
-   - Copy the matching template from `templates/celigo/<Type>.template.js`
-   - Save it to: `celigo/<Type>/<YourName> - <Type>.js`
+The runner builds **Celigo-ish** `options` objects per type, e.g.:
 
-3) **Create the Node version**
-   - Copy the matching template from `templates/node/<Type>.template.js`
-   - Save it to: `node/<Type>/<YourName> - <Type>.js`
-   - Keep the function body the same as the Celigo version
-   - Ensure it exports the function using `module.exports = { ... }`
+- Transform: `{ record, data, settings, testMode }`
+- PreMap: `{ data: [...], lastExportDateTime, settings, testMode }`
+- PostResponseMap: `{ responseData, errors, abort, newErrorsAndRetryData, settings, testMode }`
+- ContentBasedFlowRouter: `{ rawMessageBody, settings, testMode }`
+- HandleRequest: `{ request, method, headers, query, body, settings, testMode }`
 
-4) **Register it**
-   - Add an entry to `scripts.manifest.json`:
-     ```json
-     "YourName - Transform": { "type": "transform", "fn": "transform" }
-     ```
-   - The key must match the **filename without `.js`**.
+You can tweak defaults in `runner.profile.json`.
 
-5) **Test it**
-   ```bash
-   node index.js --name "YourName - Transform" --input data/sample.json
-   ```
-   If needed, override:
-   ```bash
-   node index.js --type transform --name "YourName - Transform" --fn transform --input data/sample.json
-   ```
+## Add a new script (checklist)
 
-## Naming convention
-
-Use:
-`OriginalFileName - CurrentFolder.js`
-
-Examples:
-- `EkaTransform - Transform.js`
-- `MAR08FoodLion - PreMap.js`
-- `MyRouter - ContentBasedFlowRouter.js`
-
-## Notes on Celigo vs Node
-
-- Celigo files should be **copy/paste safe**: no imports, no exports.
-- Node files should be **testable**: export the main function.
-- The runner supports `--fn` so you can test scripts that export non-standard names.
+1) Create `celigo/<Type>/<YourName> - <Type>.js` using `templates/celigo/<Type>.template.js`
+2) Run `npm run sync`
+3) Test with `node index.js --name "YourName - <Type>" --input data/sample.json`

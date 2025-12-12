@@ -1,0 +1,7 @@
+{
+  "notes": "Edit these defaults if your Celigo account/flow passes different option property names.",
+  "defaults": {
+    "settings": {},
+    "testMode": true
+  }
+}

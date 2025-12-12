@@ -1,0 +1,49 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Sync (lint-safe hard)",
+            "type": "shell",
+            "command": "npm",
+            "args": [
+                "run",
+                "sync",
+                "--",
+                "--lint-safe-hard"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Sync (normal)",
+            "type": "shell",
+            "command": "npm",
+            "args": [
+                "run",
+                "sync"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Script Runner (example)",
+            "type": "shell",
+            "command": "node",
+            "args": [
+                "index.js",
+                "--name",
+                "ExampleTransform - Transform",
+                "--input",
+                "data/sample.json"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        }
+    ]
+}

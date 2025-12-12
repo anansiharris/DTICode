@@ -1,5 +1,4 @@
 /**
- * Created by ChatGPT on 12/12/2025
  * Normalize a date-like value to YYYYMMDD
  *
  * Supports:
@@ -52,3 +51,5 @@ function normalizeDateToYYYYMMDD(value) {
 
   return `${year}${month}${day}`;
 }
+
+module.exports = { normalizeDateToYYYYMMDD };

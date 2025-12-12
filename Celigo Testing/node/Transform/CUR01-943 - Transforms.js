@@ -96,4 +96,4 @@ function removeAfterSpace(str) {
   return spaceIndex !== -1 ? str.substring(0, spaceIndex) : str;
 }
 
-module.exports = { transform, removeAfterSpace };
+module.exports = { transform };

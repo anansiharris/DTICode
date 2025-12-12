@@ -61,4 +61,4 @@ function transform(options) {
      return str; // Return original string if no space is found
    }
 
-module.exports = { transform, removeAfterSpace };
+module.exports = { transform };

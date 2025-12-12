@@ -1,37 +1,17 @@
-/**
- * Created by ChatGPT on 12/12/2025
- * Normalize a date-like value to YYYYMMDD
- *
- * Supports:
- *  - Excel serial numbers (e.g. 45567)
- *  - "MM/DD/YY"
- *  - "MM/DD/YYYY"
- *  - "YYYY-MM-DD"
- *  - Date objects
- *
- * Returns "" if input cannot be parsed.
- */
+// Node utils (generated / used for local testing)
 function normalizeDateToYYYYMMDD(value) {
   if (value === null || value === undefined || value === "") return "";
 
   let d;
 
-  // Excel serial date
   if (typeof value === "number" && isFinite(value)) {
     d = new Date((value - 25569) * 86400 * 1000);
-  }
-  // JS Date object
-  else if (value instanceof Date && !isNaN(value)) {
+  } else if (value instanceof Date && !isNaN(value)) {
     d = value;
-  }
-  // String formats
-  else if (typeof value === "string") {
-    // YYYY-MM-DD
+  } else if (typeof value === "string") {
     if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
       d = new Date(value + "T00:00:00");
-    }
-    // MM/DD/YY or MM/DD/YYYY
-    else if (/^\d{1,2}\/\d{1,2}\/\d{2,4}$/.test(value)) {
+    } else if (/^\d{1,2}\/\d{1,2}\/\d{2,4}$/.test(value)) {
       let [mm, dd, yy] = value.split("/");
       if (yy.length === 2) yy = "20" + yy;
       d = new Date(
@@ -52,3 +32,5 @@ function normalizeDateToYYYYMMDD(value) {
 
   return `${year}${month}${day}`;
 }
+
+module.exports = { normalizeDateToYYYYMMDD };

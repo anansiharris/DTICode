@@ -85,4 +85,4 @@ function reformatDate(date) {
   return `20${yy}${mm.padStart(2, "0")}${dd.padStart(2, "0")}`;
 }
 
-module.exports = { transform, ExcelDateToJSDate, reformatDate };
+module.exports = { transform };

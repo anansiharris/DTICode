@@ -1,6 +1,5 @@
 function handleRequest(options) {
-  // Celigo Handle Request script
-  return { statusCode: 200, body: options.request || options };
+  return { statusCode: 200, body: options.body || options.request || options };
 }
 
 module.exports = { handleRequest };

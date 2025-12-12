@@ -1,5 +1,4 @@
 /**
- * Created by ChatGPT on 12/12/2025
  * Normalize a date-like value to YYYYMMDD
  *
  * Supports:

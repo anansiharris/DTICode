@@ -1,10 +1,6 @@
 // index.js (CommonJS)
-// Celigo script runner framework + Results output
-// Supports the script types in this repo and uses scripts.manifest.json when present.
-//
-// Examples:
-//   node index.js --name "ExampleTransform - Transform" --input data/sample.json
-//   node index.js --type transform --name "ExampleTransform - Transform" --fn transform --input data/sample.json
+// Celigo script runner framework + Results output.
+// Uses scripts.manifest.json when present.
 //
 // Output is written to ./Results/<name>_<type>_<fn>_<timestamp>.json
 
@@ -43,6 +39,12 @@ function loadManifest() {
   return readJson(p);
 }
 
+function loadProfile() {
+  const p = path.join(__dirname, "runner.profile.json");
+  if (!fs.existsSync(p)) return { defaults: { settings: {}, testMode: true } };
+  return readJson(p);
+}
+
 function printHelp() {
   console.log(`
 Celigo Script Runner (CommonJS)
@@ -67,74 +69,101 @@ Type keys:
   premap
   presavepage
   transform
-
-Examples:
-  node index.js --name "ExampleTransform - Transform"
-  node index.js --name "ExamplePostResponse - PostResponseMap" --input data/sample.json
-  node index.js --type transform --name "MyScript - Transform" --fn transform --input data/myInput.json
 `);
+}
+
+function mergeShallow(a, b) {
+  return Object.assign({}, a || {}, b || {});
+}
+
+function makeCommon(profile, input) {
+  return {
+    settings: (profile.defaults && profile.defaults.settings) || {},
+    testMode: !!(profile.defaults && profile.defaults.testMode),
+    _input: input
+  };
 }
 
 const TYPE_MAP = {
   branching: {
     folder: ["node", "Branching"],
     defaultFn: "branch",
-    buildOptions: (input) => ({ record: input, data: input })
+    buildOptions: (profile, input) => mergeShallow(makeCommon(profile, input), { record: input, data: input })
   },
   contentbasedflowrouter: {
     folder: ["node", "ContentBasedFlowRouter"],
     defaultFn: "contentBasedFlowRouter",
-    buildOptions: (input) => ({ rawMessageBody: typeof input === "string" ? input : JSON.stringify(input) })
+    buildOptions: (profile, input) => mergeShallow(makeCommon(profile, input), {
+      rawMessageBody: typeof input === "string" ? input : JSON.stringify(input)
+    })
   },
   filter: {
     folder: ["node", "Filter"],
     defaultFn: "filter",
-    buildOptions: (input) => ({ data: Array.isArray(input) ? input : [input] })
+    buildOptions: (profile, input) => mergeShallow(makeCommon(profile, input), {
+      data: Array.isArray(input) ? input : [input],
+      record: input
+    })
   },
   forminit: {
     folder: ["node", "FormInit"],
     defaultFn: "formInit",
-    buildOptions: (input) => ({ form: input })
+    buildOptions: (profile, input) => mergeShallow(makeCommon(profile, input), { form: input, state: {} })
   },
   handlerequest: {
     folder: ["node", "HandleRequest"],
     defaultFn: "handleRequest",
-    buildOptions: (input) => ({ request: input })
+    buildOptions: (profile, input) => mergeShallow(makeCommon(profile, input), {
+      request: input, method: "POST", headers: {}, query: {}, body: input
+    })
   },
   postaggregate: {
     folder: ["node", "PostAggregate"],
     defaultFn: "postAggregate",
-    buildOptions: (input) => ({ data: Array.isArray(input) ? input : [input] })
+    buildOptions: (profile, input) => mergeShallow(makeCommon(profile, input), {
+      data: Array.isArray(input) ? input : [input],
+      aggregatedData: input
+    })
   },
   postmap: {
     folder: ["node", "PostMap"],
     defaultFn: "postMap",
-    buildOptions: (input) => ({ data: Array.isArray(input) ? input : [input] })
+    buildOptions: (profile, input) => mergeShallow(makeCommon(profile, input), {
+      data: Array.isArray(input) ? input : [input],
+      mappedData: input
+    })
   },
   postresponsemap: {
     folder: ["node", "PostResponseMap"],
     defaultFn: "postResponseMap",
-    buildOptions: (input) => ({ responseData: input, data: input })
+    buildOptions: (profile, input) => mergeShallow(makeCommon(profile, input), {
+      responseData: input, data: input, errors: [], abort: false, newErrorsAndRetryData: []
+    })
   },
   postsubmit: {
     folder: ["node", "PostSubmit"],
     defaultFn: "postSubmit",
-    buildOptions: (input) => ({ responseData: input, data: input })
+    buildOptions: (profile, input) => mergeShallow(makeCommon(profile, input), {
+      responseData: input, data: input, errors: []
+    })
   },
   premap: {
     folder: ["node", "PreMap"],
     defaultFn: "preMap",
-    buildOptions: (input) => ({ data: Array.isArray(input) ? input : [input] })
+    buildOptions: (profile, input) => mergeShallow(makeCommon(profile, input), {
+      data: Array.isArray(input) ? input : [input],
+      lastExportDateTime: null
+    })
   },
   presavepage: {
     folder: ["node", "PreSavePage"],
     defaultFn: "preSavePage",
-    buildOptions: (input) => ({ form: input })
+    buildOptions: (profile, input) => mergeShallow(makeCommon(profile, input), { form: input, page: {}, state: {} })
   },
   transform: {
     folder: ["node", "Transform"],
     defaultFn: "transform",
-    buildOptions: (input) => ({ record: input, data: input })
+    buildOptions: (profile, input) => mergeShallow(makeCommon(profile, input), { record: input, data: input })
   }
 };
 
@@ -151,9 +180,7 @@ function pickFunction(mod, desiredFn, defaultFn) {
   const exportedFns = Object.entries(mod).filter(([, v]) => typeof v === "function");
   if (exportedFns.length === 1) return { fn: exportedFns[0][1], fnName: exportedFns[0][0] };
 
-  throw new Error(
-    `No runnable function export found. Try --fn.\nExports: ${Object.keys(mod).join(", ") || "(none)"}`
-  );
+  throw new Error(`No runnable function export found. Try --fn.\nExports: ${Object.keys(mod).join(", ") || "(none)"}`);
 }
 
 function main() {
@@ -163,6 +190,7 @@ function main() {
   }
 
   const manifest = loadManifest();
+  const profile = loadProfile();
 
   let name = getArg("--name", null);
   let type = (getArg("--type", null) || "").toLowerCase();
@@ -180,14 +208,11 @@ function main() {
   }
 
   if (!type || !TYPE_MAP[type]) {
-    console.error(
-      `❌ Unknown or missing --type.\nAllowed: ${Object.keys(TYPE_MAP).join(", ")}\n` +
-      `Tip: add/update scripts.manifest.json to avoid passing --type.`
-    );
+    console.error(`❌ Unknown or missing --type.\nAllowed: ${Object.keys(TYPE_MAP).join(", ")}\nTip: update scripts.manifest.json to avoid --type.`);
     process.exit(1);
   }
 
-  if (!require("fs").existsSync(inputPath)) {
+  if (!fs.existsSync(inputPath)) {
     console.error(`❌ Input JSON not found:\n  ${inputPath}`);
     process.exit(1);
   }
@@ -196,7 +221,7 @@ function main() {
   const baseDir = path.join(__dirname, ...folder);
   const scriptPath = path.join(baseDir, `${name}.js`);
 
-  if (!require("fs").existsSync(scriptPath)) {
+  if (!fs.existsSync(scriptPath)) {
     console.error(`❌ Script not found:\n  ${scriptPath}`);
     process.exit(1);
   }
@@ -205,24 +230,18 @@ function main() {
   const mod = require(scriptPath);
   const { fn, fnName: chosenFn } = pickFunction(mod, fnName, defaultFn);
 
-  const options = buildOptions(input);
+  const options = buildOptions(profile, input);
   const result = fn(options);
 
   const resultsDir = path.join(__dirname, "Results");
   ensureDir(resultsDir);
 
-  const outputFile = path.join(
-    resultsDir,
-    `${safeName(name)}_${safeName(type)}_${safeName(chosenFn)}_${Date.now()}.json`
-  );
-
-  require("fs").writeFileSync(outputFile, JSON.stringify(result, null, 2), "utf8");
+  const outputFile = path.join(resultsDir, `${safeName(name)}_${safeName(type)}_${safeName(chosenFn)}_${Date.now()}.json`);
+  fs.writeFileSync(outputFile, JSON.stringify(result, null, 2), "utf8");
   console.log(`✅ Ran ${type}.${chosenFn} and wrote: ${outputFile}`);
 }
 
-try {
-  main();
-} catch (err) {
+try { main(); } catch (err) {
   console.error("❌ Runner failed");
   console.error(err && err.stack ? err.stack : err);
   process.exit(1);
