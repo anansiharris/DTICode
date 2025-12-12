@@ -1,5 +1,7 @@
 # Celigo Script Repo (Celigo + Node, CommonJS)
 
+The framework for this repo was created by ChatGPT and I will mark comments on code that was created by AI
+
 This repo is set up so you can keep **two versions** of each script:
 
 - `celigo/<Type>/...` = paste-ready code for Celigo (no `require`, no `module.exports`)
