@@ -1,12 +1,13 @@
 {
   "name": "celigo-script-runner",
-  "version": "2.0.0",
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "run": "node index.js",
-    "help": "node index.js --help",
     "sync": "node tools/sync.js",
-    "manifest": "node tools/sync.js --manifest-only"
+    "sync:hard": "node tools/sync.js --lint-safe-hard",
+    "sync:watch": "node tools/sync-watch.js --lint-safe-hard",
+    "manifest": "node tools/sync.js --manifest-only",
+    "run": "node index.js",
+    "postinstall": "node tools/sync.js --lint-safe-hard"
   }
 }

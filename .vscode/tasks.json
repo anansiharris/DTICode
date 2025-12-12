@@ -2,14 +2,12 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Sync (lint-safe hard)",
+            "label": "Sync (hard lint-safe)",
             "type": "shell",
             "command": "npm",
             "args": [
                 "run",
-                "sync",
-                "--",
-                "--lint-safe-hard"
+                "sync:hard"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -30,7 +28,21 @@
             "problemMatcher": []
         },
         {
-            "label": "Run Script Runner (example)",
+            "label": "Sync Watch (hard lint-safe)",
+            "type": "shell",
+            "command": "npm",
+            "args": [
+                "run",
+                "sync:watch"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "isBackground": true,
+            "problemMatcher": []
+        },
+        {
+            "label": "Run runner (ExampleTransform)",
             "type": "shell",
             "command": "node",
             "args": [

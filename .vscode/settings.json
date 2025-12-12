@@ -1,0 +1,13 @@
+{
+    "editor.formatOnSave": true,
+    "files.autoSave": "afterDelay",
+    "editor.defaultFormatter": "vscode.typescript-language-features",
+    "editor.autoIndentOnPaste": true,
+    "files.eol": "\n",
+    "files.trimTrailingWhitespace": true,
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/Results": true
+    }
+}

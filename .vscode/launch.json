@@ -1,43 +1,25 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        {
-            "name": "Sync (lint-safe hard)",
-            "type": "node",
-            "request": "launch",
-            "program": "${workspaceFolder}/tools/sync.js",
-            "args": [
-                "--lint-safe-hard"
-            ],
-            "cwd": "${workspaceFolder}",
-            "console": "integratedTerminal"
-        },
-        {
-            "name": "Run runner (ExampleTransform)",
-            "type": "node",
-            "request": "launch",
-            "program": "${workspaceFolder}/index.js",
-            "args": [
-                "--name",
-                "ExampleTransform - Transform",
-                "--input",
-                "data/sample.json"
-            ],
-            "cwd": "${workspaceFolder}",
-            "console": "integratedTerminal",
-            "preLaunchTask": "Sync (lint-safe hard)"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch Program",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "program": "${workspaceFolder}\\Celigo Testing\\tools\\sync.js"
-        }
+      {
+        "name": "Sync (hard lint-safe)",
+        "type": "node",
+        "request": "launch",
+        "program": "${workspaceFolder}/tools/sync.js",
+        "args": ["--lint-safe-hard"],
+        "cwd": "${workspaceFolder}",
+        "console": "integratedTerminal"
+      },
+      {
+        "name": "Run runner (ExampleTransform)",
+        "type": "node",
+        "request": "launch",
+        "program": "${workspaceFolder}/index.js",
+        "args": ["--name", "ExampleTransform - Transform", "--input", "data/sample.json"],
+        "cwd": "${workspaceFolder}",
+        "console": "integratedTerminal",
+        "preLaunchTask": "Sync (hard lint-safe)"
+      }
     ]
-}
+  }
+  
