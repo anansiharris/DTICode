@@ -1,0 +1,34 @@
+{
+  "ExampleTransform - Transform": {
+    "type": "transform",
+    "fn": "transform"
+  },
+  "ExamplePreMap - PreMap": {
+    "type": "premap",
+    "fn": "preMap"
+  },
+  "ExamplePostResponse - PostResponseMap": {
+    "type": "postresponsemap",
+    "fn": "postResponseMap"
+  },
+  "ExampleRouter - ContentBasedFlowRouter": {
+    "type": "contentbasedflowrouter",
+    "fn": "contentBasedFlowRouter"
+  },
+  "ExampleBranch - Branching": {
+    "type": "branching",
+    "fn": "branch"
+  },
+  "ExampleFilter - Filter": {
+    "type": "filter",
+    "fn": "filter"
+  },
+  "ExamplePreSave - PreSavePage": {
+    "type": "presavepage",
+    "fn": "preSavePage"
+  },
+  "ExampleHandleRequest - HandleRequest": {
+    "type": "handlerequest",
+    "fn": "handleRequest"
+  }
+}
