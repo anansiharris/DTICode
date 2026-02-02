@@ -58,5 +58,9 @@
   "GEN12 Transform - Transforms": {
     "type": "transform",
     "fn": "transform"
+  },
+  "SWE03-945 Export - Transforms": {
+    "type": "transform",
+    "fn": "transform"
   }
 }

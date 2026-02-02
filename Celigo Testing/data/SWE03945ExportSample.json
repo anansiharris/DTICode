@@ -1,0 +1,93 @@
+{
+    "record": {
+      "mediaType": "json",
+      "data": [
+        {
+          "DepositorCode": "SWE03",
+          "OrderRefNumber": "9BL0228871",
+          "PurchOrderNumber": "271303",
+          "ShipmentID": "S12879",
+          "OrderDate": "01/30/2026",
+          "ShipDate": "01/01/1900",
+          "ShipTime": "0:00:00",
+          "ExpDeliveryDate": "02/02/2026",
+          "ShipTo": {
+            "ShipToName": "H T HACKNEY WAYNESVILLE",
+            "ShipToName2": "0079213560060",
+            "ShipToAddr1": "218 DEPOT ST",
+            "ShipToCity": "WAYNESVILLE",
+            "ShipToState": "NC",
+            "ShipToZip": "28786-3714",
+            "ShipToCountry": "US"
+          },
+          "ShipFrom": {
+            "ShipFromCode": "001",
+            "ShipFromName": "Distribution Technology"
+          },
+          "Carrier": {
+            "CarrierCode": "UPSG",
+            "CarrierName": "UPS® Ground"
+          },
+          "ProNumber": "1ZX281850395024653",
+          "ShipmentMethodCode": "GROUND",
+          "FreightBillType": "1",
+          "FreightBillTo": {
+            "FrtBillToCode": "SWEPOB7113",
+            "FrtBillToName": "SWEDISH MATCH NA",
+            "FrtBillToAddr1": "PO BOX 18170",
+            "FrtBillToCity": "Shreveport",
+            "FrtBillToState": "LA",
+            "FrtBillToZip": "71138",
+            "FrtBillToCountry": "US"
+          },
+          "FreightCost": "0.00",
+          "OrderStatus": "Posted",
+          "TotalQtyOrdered": "2",
+          "GrsWeight": "18.8",
+          "NetWeight": "18.80",
+          "ShipLine": {
+            "ItemNumber": "400500",
+            "QtyOrdered": "2",
+            "QtyShipped": "2",
+            "UOM": "CASE",
+            "ItemDesc1": "LONGHORN LONG CUT WTGRN 18/5 CAN ROLLS",
+            "Lot": "111725",
+            "LineReference": "NA01-17659366",
+            "NMFCCode": "183160-02",
+            "FreightClass": "77.5",
+            "GroupID": "LP57866",
+            "CodeDate": "11/17/2025",
+            "TagID": "LP57866"
+          }
+        }
+      ],
+      "duration": 94,
+      "dataRecordTraceKeys": [
+        null
+      ],
+      "traceKeysDuplicate": false
+    },
+    "pageIndex": 0,
+    "settings": {
+      "integration": {},
+      "flowGrouping": {},
+      "flow": {},
+      "import": {},
+      "connection": {
+        "region": "."
+      },
+      "iClient": {}
+    },
+    "job": {
+      "_id": "6980db990bdb330c6e1833c4",
+      "type": "import",
+      "startedAt": "2026-02-02T17:15:05.842Z",
+      "parentJob": {
+        "_id": "6980db990bdb330c6e1833c5",
+        "type": "flow",
+        "startedAt": "2026-02-02T17:15:00.842Z",
+        "flowExecutionGroupId": "6980db990bdb330c6e1833c6"
+      }
+    },
+    "testMode": true
+  }
